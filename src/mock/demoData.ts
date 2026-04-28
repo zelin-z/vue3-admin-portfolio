@@ -23,7 +23,18 @@ const error = (message = "请求失败"): MockResponse => ({
 
 const now = "2026-01-15 10:00:00";
 
-let users = [
+type DemoUser = {
+  id: number;
+  createTime: string;
+  updateTime: string;
+  username: string;
+  password: string;
+  name: string;
+  phone: null;
+  roleName: string;
+};
+
+let users: DemoUser[] = [
   {
     id: 1,
     createTime: now,
@@ -38,11 +49,11 @@ let users = [
     id: 2,
     createTime: now,
     updateTime: now,
-    username: "editor",
+    username: "product",
     password: "111111",
-    name: "运营同学",
+    name: "商品运营",
     phone: null,
-    roleName: "运营管理员",
+    roleName: "商品运营",
   },
   {
     id: 3,
@@ -50,17 +61,50 @@ let users = [
     updateTime: now,
     username: "viewer",
     password: "111111",
-    name: "访客用户",
+    name: "只读访客",
     phone: null,
     roleName: "只读用户",
   },
 ];
 
 let roles = [
-  { id: 1, createTime: now, updateTime: now, roleName: "超级管理员", remark: null },
-  { id: 2, createTime: now, updateTime: now, roleName: "运营管理员", remark: null },
-  { id: 3, createTime: now, updateTime: now, roleName: "只读用户", remark: null },
+  { id: 1, createTime: now, updateTime: now, roleName: "超级管理员", remark: "拥有全部菜单和按钮权限" },
+  { id: 2, createTime: now, updateTime: now, roleName: "商品运营", remark: "仅拥有商品管理相关菜单" },
+  { id: 3, createTime: now, updateTime: now, roleName: "只读用户", remark: "仅可访问首页和数据大屏" },
 ];
+
+const demoProfiles: Record<
+  string,
+  {
+    routes: string[];
+    buttons: string[];
+    roles: string[];
+    name: string;
+    avatar: string;
+  }
+> = {
+  admin: {
+    routes: ["Acl", "User", "Role", "Permission", "Product", "Trademark", "Attr", "Spu", "Sku"],
+    buttons: ["btn.TradeMark.add"],
+    roles: ["超级管理员"],
+    name: "admin",
+    avatar: "https://dummyimage.com/80x80/409eff/ffffff&text=Admin",
+  },
+  product: {
+    routes: ["Product", "Trademark", "Attr", "Spu", "Sku"],
+    buttons: ["btn.TradeMark.add"],
+    roles: ["商品运营"],
+    name: "product",
+    avatar: "https://dummyimage.com/80x80/67c23a/ffffff&text=Ops",
+  },
+  viewer: {
+    routes: [],
+    buttons: [],
+    roles: ["只读用户"],
+    name: "viewer",
+    avatar: "https://dummyimage.com/80x80/909399/ffffff&text=View",
+  },
+};
 
 let trademarks = [
   { id: 1, tmName: "Apple", logoUrl: "https://dummyimage.com/120x120/409eff/ffffff&text=Apple" },
@@ -225,6 +269,18 @@ const getBody = (data: unknown) => {
   return data as Record<string, unknown>;
 };
 
+const getHeader = (config: AxiosRequestConfig, name: string) => {
+  const headers = config.headers as any;
+  return headers?.[name] || headers?.[name.toLowerCase()] || (typeof headers?.get === "function" ? headers.get(name) : "");
+};
+
+const createDemoToken = (username: string) => `DemoToken:${username}`;
+
+const getUsernameFromToken = (config: AxiosRequestConfig) => {
+  const token = String(getHeader(config, "token") || "");
+  return token.startsWith("DemoToken:") ? token.replace("DemoToken:", "") : "admin";
+};
+
 export const mockRequest = (config: AxiosRequestConfig): MockResponse => {
   const path = getPath(config);
   const method = (config.method || "get").toLowerCase();
@@ -234,17 +290,13 @@ export const mockRequest = (config: AxiosRequestConfig): MockResponse => {
     const username = String(body.username || "");
     const password = String(body.password || "");
     const matched = users.find((item) => item.username === username && item.password === password);
-    return matched ? success("Admin Token", "登录成功") : error("账号或密码不正确");
+    return matched ? success({ token: createDemoToken(matched.username) }, "登录成功") : error("账号或密码不正确");
   }
 
   if (path.includes("/admin/acl/index/info")) {
-    return success({
-      routes: ["Acl", "User", "Role", "Permission", "Product", "Trademark", "Attr", "Spu", "Sku"],
-      buttons: ["btn.TradeMark.add"],
-      roles: ["admin"],
-      name: "admin",
-      avatar: "https://dummyimage.com/80x80/409eff/ffffff&text=Admin",
-    }, "获取用户信息成功");
+    const username = getUsernameFromToken(config);
+    const profile = demoProfiles[username];
+    return profile ? success(profile, "获取用户信息成功") : error("登录已过期，请重新登录");
   }
 
   if (path.includes("/admin/acl/index/logout")) {
