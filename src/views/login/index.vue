@@ -10,6 +10,19 @@
           ref="loginForms"
         >
           <h1>Hello</h1>
+          <div class="demo_accounts">
+            <p>演示账号：点击可快速填充，用于查看不同角色的动态菜单</p>
+            <el-button
+              v-for="account in demoAccounts"
+              :key="account.username"
+              size="small"
+              type="primary"
+              plain
+              @click="fillAccount(account)"
+            >
+              {{ account.label }}
+            </el-button>
+          </div>
           <el-form-item prop="username">
             <el-input
               :prefix-icon="User"
@@ -57,6 +70,17 @@ let loginForm = reactive({
   username: "admin",
   password: "111111",
 });
+
+const demoAccounts = [
+  { label: "超级管理员 admin", username: "admin", password: "111111" },
+  { label: "商品运营 product", username: "product", password: "111111" },
+  { label: "只读用户 viewer", username: "viewer", password: "111111" },
+];
+
+const fillAccount = (account: { username: string; password: string }) => {
+  loginForm.username = account.username;
+  loginForm.password = account.password;
+};
 
 const loginForms = ref();
 
@@ -116,9 +140,21 @@ const rules = {
     background: url("@/assets/images/login_form.png") no-repeat;
     background-size: cover;
     h1 {
-      padding: 20px;
+      padding: 20px 20px 10px;
       color: white;
       font-size: 40px;
+    }
+    .demo_accounts {
+      padding: 0 20px 16px;
+      color: #ffffff;
+      p {
+        margin-bottom: 10px;
+        font-size: 14px;
+        opacity: 0.9;
+      }
+      .el-button {
+        margin: 0 8px 8px 0;
+      }
     }
     .login_btn {
       width: 100%;
