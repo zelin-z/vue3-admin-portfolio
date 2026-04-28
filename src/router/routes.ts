@@ -135,14 +135,7 @@ export const asnycRoute = [
           icon: "Sunset",
         },
       },
-      {
-        path: "/product/sku",
-        component: () => import("@/views/product/sku/index.vue"),
-        name: "Sku",
-        meta: {
-          title: "SKU管理",
-          icon: "MostlyCloudy",
-        },
+      
       },
     ],
   },
