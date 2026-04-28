@@ -3,7 +3,7 @@
     <div class="box">
       <img :src="store.avatar" alt="" class="avatar" />
       <div class="bottom">
-        <h3 class="title">{{ getTime() }}好呀{{ store.username }}</h3>
+        <h3 class="title">欢迎回来{{ store.username }}</h3>
       </div>
     </div>
   </el-card>
