@@ -84,14 +84,14 @@ const demoProfiles: Record<
   }
 > = {
   admin: {
-    routes: ["Acl", "User", "Role", "Permission", "Product", "Trademark", "Attr", "Spu", "Sku"],
+    routes: ["Acl", "User", "Role", "Permission", "Product", "Trademark", "Attr", "Spu"],
     buttons: ["btn.TradeMark.add"],
     roles: ["超级管理员"],
     name: "admin",
     avatar: "https://dummyimage.com/80x80/409eff/ffffff&text=Admin",
   },
   product: {
-    routes: ["Product", "Trademark", "Attr", "Spu", "Sku"],
+    routes: ["Product", "Trademark", "Attr", "Spu"],
     buttons: ["btn.TradeMark.add"],
     roles: ["商品运营"],
     name: "product",
