@@ -40,19 +40,6 @@ npm run build
 npm run preview
 ```
 
-## 部署到 GitHub Pages
-
-1. 在 GitHub 创建一个新仓库，例如 `vue3-admin-portfolio`。
-2. 把本项目代码推送到仓库的 `main` 分支。
-3. 进入仓库 `Settings` → `Pages`。
-4. 在 `Build and deployment` 中，把 `Source` 设置为 `GitHub Actions`。
-5. 回到 `Actions` 页面，等待 `Deploy to GitHub Pages` 执行成功。
-6. 部署完成后，GitHub 会生成类似下面的访问链接：
-
-```text
-https://你的GitHub用户名.github.io/vue3-admin-portfolio/
-```
-
 ## 主要功能
 
 - 登录页与 Token 持久化
