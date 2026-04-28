@@ -162,7 +162,7 @@ const permissions = [
           { id: 7, createTime: now, updateTime: now, pid: 6, name: "品牌管理", code: "Trademark", toCode: "Trademark", type: 1, status: null, level: 3, select: true },
           { id: 8, createTime: now, updateTime: now, pid: 6, name: "属性管理", code: "Attr", toCode: "Attr", type: 1, status: null, level: 3, select: true },
           { id: 9, createTime: now, updateTime: now, pid: 6, name: "SPU管理", code: "Spu", toCode: "Spu", type: 1, status: null, level: 3, select: true },
-          { id: 10, createTime: now, updateTime: now, pid: 6, name: "SKU管理", code: "Sku", toCode: "Sku", type: 1, status: null, level: 3, select: true },
+        
         ],
       },
     ],
