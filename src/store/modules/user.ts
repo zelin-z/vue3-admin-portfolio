@@ -14,6 +14,24 @@ import { constantRoute, asnycRoute, anyRoute } from "@/router/routes";
 //@ts-ignore
 import cloneDeep from "lodash/cloneDeep";
 
+function collectRouteNames(routes: any[]): string[] {
+  return routes.reduce((names: string[], route: any) => {
+    if (route.name) names.push(route.name);
+    if (route.children?.length) names.push(...collectRouteNames(route.children));
+    return names;
+  }, []);
+}
+
+const dynamicRouteNames = collectRouteNames([...asnycRoute, ...anyRoute]);
+
+function resetDynamicRoutes() {
+  dynamicRouteNames.forEach((name) => {
+    if (router.hasRoute(name)) {
+      router.removeRoute(name);
+    }
+  });
+}
+
 function filterAsyncRoute(asnycRoute: any, routes: any) {
   return asnycRoute.filter((item: any) => {
     if (routes.includes(item.name)) {
@@ -61,13 +79,17 @@ let userStore = defineStore("User", {
         this.username = result.data.name;
         this.avatar = result.data.avatar;
         this.buttons = result.data.buttons;
+        // 每次根据当前用户权限重新生成动态路由，避免切换账号后保留上一个账号的路由。
+        resetDynamicRoutes();
         let userAsyncRoute = filterAsyncRoute(
           cloneDeep(asnycRoute),
           result.data.routes
         );
         this.menuRoutes = [...constantRoute, ...userAsyncRoute, ...anyRoute];
         [...userAsyncRoute, ...anyRoute].forEach((route: any) => {
-          router.addRoute(route);
+          if (!router.hasRoute(route.name)) {
+            router.addRoute(route);
+          }
         });
         return "ok";
       } else {
@@ -85,6 +107,9 @@ let userStore = defineStore("User", {
       this.token = "";
       this.username = "";
       this.avatar = "";
+      this.buttons = [];
+      this.menuRoutes = constantRoute;
+      resetDynamicRoutes();
       REMOVE_TOKEN();
     },
   },
