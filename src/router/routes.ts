@@ -1,7 +1,5 @@
-
 export const constantRoute = [
   {
-    // 登录
     path: "/login",
     component: () => import("@/views/login/index.vue"),
     name: "login",
@@ -11,7 +9,6 @@ export const constantRoute = [
     },
   },
   {
-    // 登录成功以后展示数据的路由
     path: "/",
     component: () => import("@/layout/index.vue"),
     name: "layout",
@@ -41,7 +38,6 @@ export const constantRoute = [
       hidden: true,
     },
   },
-
   {
     path: "/screen",
     component: () => import("@/views/screen/index.vue"),
@@ -79,7 +75,7 @@ export const asnycRoute = [
       {
         path: "/acl/permission",
         component: () => import("@/views/acl/permission/index.vue"),
-        name: "Permission", //
+        name: "Permission",
         meta: {
           title: "菜单管理",
           hidden: false,
@@ -134,8 +130,6 @@ export const asnycRoute = [
           title: "SPU管理",
           icon: "Sunset",
         },
-      },
-      
       },
     ],
   },
